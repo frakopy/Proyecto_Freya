@@ -65,7 +65,7 @@ class Microfono():
 if __name__ == '__main__':
 
     #Instanciamos la clase AsistenteFreya y le indicamos que saludo.
-    saludo_freya = 'Hola mi nombre es Freya, estoy para servirle ingeniero'
+    saludo_freya = 'Hola mi nombre es Freya, estoy para servirle ingeniero Francisco'
     FREYA = AsistenteFreya()
     FREYA.habla_freya(saludo_freya)
 

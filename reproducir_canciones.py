@@ -1,4 +1,25 @@
 import os,time,random, re
+import vlc
+
+def play_list(rutas_musicas):
+
+    media_player = vlc.MediaListPlayer()
+    player = vlc.Instance()
+    media_list = player.media_list_new()
+
+    for musica in rutas_musicas:
+        media = player.media_new(musica)
+        media_list.add_media(media)
+
+    media_player.set_media_list(media_list)
+
+    media_player.play()
+
+    time.sleep(1)
+
+    while True:
+        print('Reproduciendo música...')
+
 
 def canciones(MICROFONO,FREYA):
     #Invocamos al metodo habla_freya para que nos pregunte por el tipo de musica
@@ -15,32 +36,33 @@ def canciones(MICROFONO,FREYA):
             print(e)
             FREYA.habla_freya('Repite por favor el tipo de música que deseas escuchar')
 
-    electronicas = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Electronica')
-    programacion = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Programing_Music')
-    relajantes = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Relajante_Concentracion')
-    salsa = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Salsa variada')
-    reggaeton = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Reggeton nuevo')
-    vallenato = os.listdir('D:/A_PYTHON/Documentacion_Python/Musica para estudiar/vallenato')
+    dir_electronicas = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Electronica'
+    dir_programacion = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Programing_Music'
+    dir_relajantes = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Relajante_Concentracion'
+    dir_salsa = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Salsa variada'
+    dir_reggaeton = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Reggeton nuevo'
+    dir_vallenato = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/vallenato'
 
-    canciones = {
-                        'electrónica':electronicas,
-                        'programar':programacion,
-                        'relajante':relajantes,
-                        'salsa':salsa,
-                        'reggaetón':reggaeton,
-                        'vallenato':vallenato
-                        }
+    dir_canciones = {
+                'electrónica':dir_electronicas,
+                'programar':dir_programacion,
+                'relajante':dir_relajantes,
+                'salsa':dir_salsa,
+                'reggaetón':dir_reggaeton,
+                'vallenato':dir_vallenato
+                }
 
-    canciones_a_reproducir = canciones[clave]
-    cancion = random.choice(canciones_a_reproducir)
+    DIRECTORIO = dir_canciones[clave]
+    rutas_musicas = []
+
+    for ruta, carpetas, archivos in os.walk(DIRECTORIO):
+            for archivo in archivos:
+                ruta_cancion = os.path.join(ruta,archivo)
+                rutas_musicas.append(ruta_cancion)
+
+    #Llamamos a la funcion que reproducira la lista de canciones
+    play_list(rutas_musicas)
     
-    for ruta, carpetas, archivos in os.walk("D:\A_PYTHON\Documentacion_Python\Musica para estudiar"):
-            if cancion in archivos:
-                ruta_cancion = os.path.join(ruta,cancion)
-                break
-
-    os.startfile(ruta_cancion)
-
 
 
 
