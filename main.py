@@ -1,4 +1,4 @@
-import os, time,re
+import os, time,re, datetime
 import pyttsx3
 import speech_recognition as sr
 from reproducir_canciones import canciones
@@ -7,7 +7,6 @@ from reproducir_canciones import canciones
 class ProcesarOrden():
 
     def escuchar_orden(FREYA,MICROFONO):
-        lista_ordenes= ['música']
         comandos = 'música|whatsapp|abrir programas|hora'
     
         FREYA.habla_freya('¿Cual es su orden?')
@@ -22,6 +21,15 @@ class ProcesarOrden():
         
         if comando == 'música':
             canciones(MICROFONO,FREYA)
+        
+        elif comando == 'hora':
+            h = datetime.datetime.now()
+            print(h)
+            hora = h.strftime('%H')
+            minutos = h.strftime('%M')
+            segundos = h.strftime('%S')
+
+            FREYA.habla_freya(f'Son las {hora} horas con {minutos} minutos y {segundos} segundos')
             
 class AsistenteFreya():
 
@@ -55,11 +63,10 @@ class Microfono():
                     self.texto = self.r.recognize_google(self.audio, language='es-ES')
                     if self.texto:
                         return self.texto
-                    else:
-                        FREYA.habla_freya('Lo siento, no se escucho lo que dijiste, habla mas alto por favor')
                 except Exception as e:
-                    print(e)
-                    FREYA.habla_freya('Lo siento, no se escucho lo que dijiste, habla mas alto por favor')
+                    continue
+                    #print(e)
+                    #FREYA.habla_freya('Lo siento, no se escucho lo que dijiste, habla mas alto por favor')
 
 
 if __name__ == '__main__':

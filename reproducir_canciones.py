@@ -1,7 +1,7 @@
 import os,time,random, re
 import vlc
 
-def play_list(rutas_musicas):
+def play_list(rutas_musicas,MICROFONO, FREYA):
 
     media_player = vlc.MediaListPlayer()
     player = vlc.Instance()
@@ -18,7 +18,19 @@ def play_list(rutas_musicas):
     time.sleep(1)
 
     while True:
-        print('Reproduciendo música...')
+        instruccion = MICROFONO.escuchar(FREYA).lower()
+        if 'pausa' in instruccion:
+            media_player.pause()
+        elif 'play' in instruccion:
+            media_player.play()
+        elif 'siguiente' in instruccion:
+            media_player.next()
+        elif 'anterior' in instruccion:
+            media_player.previous()
+        elif 'stop' in instruccion:
+            media_player.stop()
+        elif 'finaliza' in instruccion:
+            break
 
 
 def canciones(MICROFONO,FREYA):
@@ -61,7 +73,7 @@ def canciones(MICROFONO,FREYA):
                 rutas_musicas.append(ruta_cancion)
 
     #Llamamos a la funcion que reproducira la lista de canciones
-    play_list(rutas_musicas)
+    play_list(rutas_musicas,MICROFONO, FREYA)
     
 
 
