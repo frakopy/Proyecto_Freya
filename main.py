@@ -45,6 +45,7 @@ class ProcesarOrden():
             Helena.habla_Helena(list_jokes[joke])
 
         elif 'quién es' in texto:
+            Helena.habla_Helena('Un momento, estoy buscando esa información')
             wikipedia.set_lang("es") 
             buscar = texto.replace('quién es', '')
             resultado = wikipedia.summary(buscar, 1)
