@@ -1,4 +1,4 @@
-import os,time,random, re
+import os,time,random, re, random
 import vlc
 import speech_recognition as sr
 
@@ -77,6 +77,11 @@ class Musica():
                     self.ruta_cancion = os.path.join(ruta,archivo)
                     self.rutas_musicas.append(self.ruta_cancion)
 
+        #Desordenamos la lista para que podamos crear una lista de reproduccion cada vez
+        #que le indiquemos a Helena que nos reproduzca un tipo de música
+        random.shuffle(self.rutas_musicas)
+        
+        #retornamos la lista ya desordenada para que siempre se repdozca en un orden diferente
         return self.rutas_musicas
         
 
