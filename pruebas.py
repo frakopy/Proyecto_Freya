@@ -1,21 +1,17 @@
-import wikipedia
+import wikipedia,re
+from concurrent.futures import ThreadPoolExecutor
 
 #resultado = wikipedia.summary('Daniel Ortega', 1)
 
-import random
+class Musica():
 
-list1 = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' ]
+    def __init__(self):
+        self.r = False
+    
+    def cambia(self):
+        print(self.r)
+        
 
-random.shuffle(list1)
-print(list1)
-random.shuffle(list1)
-print(list1)
-random.shuffle(list1)
-print(list1)
-random.shuffle(list1)
-print(list1)
-random.shuffle(list1)
-print(list1)
+m = Musica()
 
-
-
+m.cambia()

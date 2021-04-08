@@ -10,6 +10,7 @@ recognizer = sr.Recognizer()
 class ProcesarOrden():
 
     def escuchar_orden(self):
+        print('Hay ',len(ejecutor._threads),'hilos ejecutandose')
 
         with sr.Microphone() as source:
             self.audio = recognizer.listen(source)
@@ -25,12 +26,21 @@ class ProcesarOrden():
         
         #Despues de escuchar la orden intentamos procesarla si se cumplen alguna de las siguiente condiciones
         if 'música' in texto and 'pausa' not in texto and 'siguiente' not in texto and \
-            'anterior' not in texto and 'finaliza' not in texto and 'play' not in texto:
-            self.musica = Musica()
-            self.path_musics = self.musica.get_path_musics(self.texto,Helena)
-            if self.path_musics:
-                ejecutor.submit(self.musica.play_list_musics,self.path_musics,self.escuchar_orden)
-        
+            'anterior' not in texto and 'finaliza' not in texto and 'reinicia' not in texto:
+            
+            #llamamos a la funcion get_path_musicas para obtener un listado de rutas de las
+            #canciones que vamos a reproducir
+            self.path_musics = musica.get_path_musics(self.texto,Helena)
+
+            if self.path_musics and not musica.reproduciendo:
+                Helena.habla_Helena('Procedo a ejecutar su orden')
+                ejecutor.submit(musica.play_list_musics,self.path_musics,self.escuchar_orden)
+            
+            elif musica.reproduciendo and self.path_musics:
+                musica.media_player.stop()
+                ejecutor.submit(musica.play_list_musics,self.path_musics,self.escuchar_orden)
+                musica.cambiar_tipo_musica = True
+
         elif 'hora' in texto:
             h = datetime.datetime.now()
             hora = h.strftime('%H')
@@ -91,6 +101,10 @@ if __name__ == '__main__':
 
     #Instanciamos la clase procesar orden
     orden = ProcesarOrden()
+
+    #Creamos la instancia de la clase Musica, para utilizarla mas adelante en la reproduccion de
+    #musicas cuando se lo ordenemos al asistente (Helena)
+    musica = Musica()
 
     while True:
         #Llamamos al metodo escuchar_orden para obtener el texto de lo que hablamos

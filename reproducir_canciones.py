@@ -6,6 +6,10 @@ recognizer = sr.Recognizer()
 
 class Musica():
 
+    def __init__(self):
+        self.reproduciendo = False
+        self.cambiar_tipo_musica = False
+        
     def play_list_musics(self,rutas_musicas, escucha_orden):
 
         self.media_player = vlc.MediaListPlayer()
@@ -17,11 +21,14 @@ class Musica():
             self.media_list.add_media(self.media)
 
         self.media_player.set_media_list(self.media_list)
-
+        
+    
         self.media_player.play()
 
-        time.sleep(1)
+        #Cambiamos el valor a True para que no se vuelva a ejecutar la funcion de play
+        self.reproduciendo = True
 
+        time.sleep(1)
         #creamos este bucle para que el programa no se cierre y que por lo tanto no finalice la
         #reproduccion hasta que se lo ordenemos al llamar a la funcion que modifica el valor de 
         #la variable finalizar la cual esta siendo evaluada constantemente en el bucle While
@@ -35,21 +42,28 @@ class Musica():
                 self.media_player.previous()
             elif 'pausa' in self.orden:
                 self.media_player.pause()
-            elif 'play' in self.orden:
+            elif 'reinicia' in self.orden:
                 self.media_player.play()
             elif 'finaliza' in self.orden:
                 self.media_player.stop()
+                self.reproduciendo = False
                 break
-
+            elif self.cambiar_tipo_musica:
+                self.cambiar_tipo_musica =False
+                break
+        print('Finalizo el primer trabajo')
+        return
 
     def get_path_musics(self,texto,Helena):
-
-        try:
-            self.patron = 'electrónica|programar|relajante|salsa|reggaetón|vallenato'
-            self.clave = re.findall(self.patron,texto)[0]
-        except Exception as e:
-            print(e)
-            Helena.habla_Helena('Repite por favor el tipo de música que deseas escuchar')
+        
+        self.patron = 'electrónica|programar|relajante|salsa|reggaetón|vallenato' 
+        self.clave = re.findall(self.patron,texto)
+        
+        #preguntamos si la variable clave (una lista) contiene información 
+        if self.clave:
+            self.clave = self.clave[0]#obtenemos solo el primer elmento en caso que hayan mas
+        else:
+            #en caso contrario retornamos una lista vacia par que finalice la función
             self.rutas_musicas = []
             return self.rutas_musicas#Hacemos este return para que finalice la funcion y no ejecute el codigo de abajo
 
@@ -80,7 +94,7 @@ class Musica():
         #Desordenamos la lista para que podamos crear una lista de reproduccion cada vez
         #que le indiquemos a Helena que nos reproduzca un tipo de música
         random.shuffle(self.rutas_musicas)
-        
+
         #retornamos la lista ya desordenada para que siempre se repdozca en un orden diferente
         return self.rutas_musicas
         
