@@ -51,8 +51,8 @@ class Musica():
             elif self.cambiar_tipo_musica:
                 self.cambiar_tipo_musica =False
                 break
-        print('Finalizo el primer trabajo')
-        return
+            
+        return None
 
     def get_path_musics(self,texto,Helena):
         

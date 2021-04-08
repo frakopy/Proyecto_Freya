@@ -10,17 +10,16 @@ recognizer = sr.Recognizer()
 class ProcesarOrden():
 
     def escuchar_orden(self):
-        print('Hay ',len(ejecutor._threads),'hilos ejecutandose')
 
         with sr.Microphone() as source:
-            self.audio = recognizer.listen(source)
-        try:
-            self.texto = recognizer.recognize_google(self.audio, language='es-ES').lower()
-            self.texto = self.texto.lower()
-            return self.texto
-        except Exception as e:
-            self.texto = ''
-            return self.texto
+            try:
+                self.audio = recognizer.listen(source, timeout=1)
+                self.texto = recognizer.recognize_google(self.audio, language='es-ES').lower()
+                self.texto = self.texto.lower()
+                return self.texto
+            except:
+                self.texto = ''
+                return self.texto
 
     def ejecuta_orden(self,texto):
         
