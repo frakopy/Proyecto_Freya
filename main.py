@@ -4,10 +4,30 @@ import speech_recognition as sr
 from reproducir_canciones import Musica
 from concurrent.futures import ThreadPoolExecutor
 
+#Creamos nuestra piscina de Threads para usarlo en la llamada a las funciones
 ejecutor = ThreadPoolExecutor(max_workers=2)
+
+#Creamos el objeto de tipo Recognizer para reconocer la voz
 recognizer = sr.Recognizer()
 
+#Configuramos el lenguaje que se usara para el modulo wikipedia
+wikipedia.set_lang("es")
+
 class ProcesarOrden():
+
+    def control_reproduccion(self, comando):
+        if 'siguiente' in comando :
+            musica.media_player.next()
+        elif 'anterior' in comando :
+            musica.media_player.previous()
+        elif 'pausa' in comando:
+            print('He pausado la musica...')
+            musica.media_player.pause()
+        elif 'reinicia' in comando:
+            musica.media_player.play()
+        elif 'finaliza' in comando:
+            musica.media_player.stop()
+            musica.reproduciendo = False
 
     def escuchar_orden(self):
 
@@ -23,22 +43,28 @@ class ProcesarOrden():
 
     def ejecuta_orden(self,texto):
         
+        #Esta variable se utiliza en la funcion play_list_musics de la clase Musica para contorlar
+        #la repoduccion de una cancion (pausar, siguiente, anterior, finalizar reproducción...)
+        self.control_reproduccion(texto)
+        #musica.control_media_player = texto
+        #print(musica.control_media_player)
+
         #Despues de escuchar la orden intentamos procesarla si se cumplen alguna de las siguiente condiciones
         if 'música' in texto and 'pausa' not in texto and 'siguiente' not in texto and \
             'anterior' not in texto and 'finaliza' not in texto and 'reinicia' not in texto:
             
             #llamamos a la funcion get_path_musicas para obtener un listado de rutas de las
             #canciones que vamos a reproducir
-            self.path_musics = musica.get_path_musics(self.texto,Helena)
+            self.path_musics = musica.get_path_musics(texto,Helena)
 
             if self.path_musics and not musica.reproduciendo:
                 Helena.habla_Helena('Procedo a ejecutar su orden')
-                ejecutor.submit(musica.play_list_musics,self.path_musics,self.escuchar_orden)
+                ejecutor.submit(musica.play_list_musics,self.path_musics)
             
             elif musica.reproduciendo and self.path_musics:
-                musica.media_player.stop()
-                ejecutor.submit(musica.play_list_musics,self.path_musics,self.escuchar_orden)
                 musica.cambiar_tipo_musica = True
+                musica.media_player.stop()
+                ejecutor.submit(musica.play_list_musics,self.path_musics)
 
         elif 'hora' in texto:
             h = datetime.datetime.now()
@@ -55,7 +81,6 @@ class ProcesarOrden():
 
         elif 'quién es' in texto:
             Helena.habla_Helena('Un momento, estoy buscando esa información')
-            wikipedia.set_lang("es") 
             buscar = texto.replace('quién es', '')
             resultado = wikipedia.summary(buscar, 1)
             Helena.habla_Helena(resultado)
@@ -106,9 +131,11 @@ if __name__ == '__main__':
     musica = Musica()
 
     while True:
+        print('Escuchando...')
         #Llamamos al metodo escuchar_orden para obtener el texto de lo que hablamos
         texto = orden.escuchar_orden()
         #llamamos a la funcion ejecuta_orden para que intente procesar la orden
-        orden.ejecuta_orden(texto)
+        if texto:
+            orden.ejecuta_orden(texto)
 
 

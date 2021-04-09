@@ -9,8 +9,9 @@ class Musica():
     def __init__(self):
         self.reproduciendo = False
         self.cambiar_tipo_musica = False
+        self.control_media_player = ''
         
-    def play_list_musics(self,rutas_musicas, escucha_orden):
+    def play_list_musics(self,rutas_musicas):
 
         self.media_player = vlc.MediaListPlayer()
         self.player = vlc.Instance()
@@ -28,27 +29,16 @@ class Musica():
         #Cambiamos el valor a True para que no se vuelva a ejecutar la funcion de play
         self.reproduciendo = True
 
-        time.sleep(1)
+        time.sleep(1)#Para que de tiempo de realizar la reproduccion de la música
+
         #creamos este bucle para que el programa no se cierre y que por lo tanto no finalice la
-        #reproduccion hasta que se lo ordenemos al llamar a la funcion que modifica el valor de 
-        #la variable finalizar la cual esta siendo evaluada constantemente en el bucle While
+        #reproduccion, cuando desde el main pedimos un nuevo tipo de musica entonces asignamos
+        #el valor de True a la variable cambiar_tipo_musica para que entre en el if y rompa el while
         while True:
-            #La funcion escucha_orden se la recibimos por parámetro
-            self.orden = escucha_orden()
-            print(self.orden)
-            if 'siguiente' in self.orden :
-                self.media_player.next()        
-            elif 'anterior' in self.orden :
-                self.media_player.previous()
-            elif 'pausa' in self.orden:
-                self.media_player.pause()
-            elif 'reinicia' in self.orden:
-                self.media_player.play()
-            elif 'finaliza' in self.orden:
-                self.media_player.stop()
-                self.reproduciendo = False
-                break
-            elif self.cambiar_tipo_musica:
+            if self.cambiar_tipo_musica:
+                #La siguiente variable la cambiamos a False para que no entre automaticamente ya que en 
+                #el mail la cambiamos a True, entonces sino le modificamos el valor entrara automaticamente
+                #en el While ya que seguira siendo True por eso antes de romper el bucle le cambiamos el valor
                 self.cambiar_tipo_musica =False
                 break
             
