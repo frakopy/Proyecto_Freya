@@ -9,7 +9,7 @@ class Musica():
     def __init__(self):
         self.reproduciendo = False
         self.cambiar_tipo_musica = False
-        self.control_media_player = ''
+        self.finalizar_musica= False
         
     def play_list_musics(self,rutas_musicas):
 
@@ -26,9 +26,6 @@ class Musica():
     
         self.media_player.play()
 
-        #Cambiamos el valor a True para que no se vuelva a ejecutar la funcion de play
-        self.reproduciendo = True
-
         time.sleep(1)#Para que de tiempo de realizar la reproduccion de la música
 
         #creamos este bucle para que el programa no se cierre y que por lo tanto no finalice la
@@ -42,7 +39,9 @@ class Musica():
                 self.cambiar_tipo_musica =False
                 break
             
-        return None
+            elif self.finalizar_musica:
+                break
+
 
     def get_path_musics(self,texto,Helena):
         

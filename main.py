@@ -27,7 +27,8 @@ class ProcesarOrden():
             musica.media_player.play()
         elif 'finaliza' in comando:
             musica.media_player.stop()
-            musica.reproduciendo = False
+            musica.finalizar_musica = True
+
 
     def escuchar_orden(self):
 
@@ -60,6 +61,8 @@ class ProcesarOrden():
             if self.path_musics and not musica.reproduciendo:
                 Helena.habla_Helena('Procedo a ejecutar su orden')
                 ejecutor.submit(musica.play_list_musics,self.path_musics)
+                #Para no permitir que se reproduzca otro tipo de musica si ya hay una en curso
+                musica.reproduciendo = True
             
             elif musica.reproduciendo and self.path_musics:
                 musica.cambiar_tipo_musica = True
