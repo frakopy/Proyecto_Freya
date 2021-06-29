@@ -5,7 +5,7 @@ from reproducir_canciones import Musica
 from concurrent.futures import ThreadPoolExecutor
 
 #Creamos nuestra piscina de Threads para usarlo en la llamada a las funciones
-ejecutor = ThreadPoolExecutor(max_workers=2)
+ejecutor = ThreadPoolExecutor(max_workers=5)
 
 #Creamos el objeto de tipo Recognizer para reconocer la voz
 recognizer = sr.Recognizer()
@@ -31,26 +31,26 @@ class ProcesarOrden():
 
 
     def escuchar_orden(self):
-
+        #Es importtante cerrar el Microfono de la computadora despues de hablar ya que de lo contrario si se continua escuchando la
+        #Ruido recognozer seguira esperando recibir mas información y nunca retornara el texto has que haya silencio total, el parámetro
+        #de time out funciona para que recognizer deje de esperar mas información segundos despues de escuchar silencio, en nuestro caso 1 segundo
         with sr.Microphone() as source:
             try:
                 self.audio = recognizer.listen(source, timeout=1)
-                self.texto = recognizer.recognize_google(self.audio, language='es-ES').lower()
-                self.texto = self.texto.lower()
-                return self.texto
+                self.palabras_escuchadas = recognizer.recognize_google(self.audio, language='es-ES').lower()
+                return self.palabras_escuchadas
             except:
-                self.texto = ''
-                return self.texto
+                self.palabras_escuchadas = ''
+                return self.palabras_escuchadas
 
     def ejecuta_orden(self,texto):
-        
-        #Esta variable se utiliza en la funcion play_list_musics de la clase Musica para contorlar
-        #la repoduccion de una cancion (pausar, siguiente, anterior, finalizar reproducción...)
+
+        #Esta funcion se utiliza para controlar la repoduccion de una cancion (pausar, siguiente, anterior, finalizar reproducción...)
         self.control_reproduccion(texto)
         #musica.control_media_player = texto
         #print(musica.control_media_player)
 
-        #Despues de escuchar la orden intentamos procesarla si se cumplen alguna de las siguiente condiciones
+        #Despues de escuchar la orden intentamos procesarla si se cumplen las siguiente condiciones
         if 'música' in texto and 'pausa' not in texto and 'siguiente' not in texto and \
             'anterior' not in texto and 'finaliza' not in texto and 'reinicia' not in texto:
             
@@ -63,11 +63,13 @@ class ProcesarOrden():
                 ejecutor.submit(musica.play_list_musics,self.path_musics)
                 #Para no permitir que se reproduzca otro tipo de musica si ya hay una en curso
                 musica.reproduciendo = True
+                texto = ''
             
             elif musica.reproduciendo and self.path_musics:
                 musica.cambiar_tipo_musica = True
                 musica.media_player.stop()
                 ejecutor.submit(musica.play_list_musics,self.path_musics)
+                texto = ''
 
         elif 'hora' in texto:
             h = datetime.datetime.now()
@@ -76,17 +78,20 @@ class ProcesarOrden():
             segundos = h.strftime('%S')
 
             Helena.habla_Helena(f'Son las {hora} horas con {minutos} minutos y {segundos} segundos')
+            texto = ''
         
         elif 'broma' in texto:
             list_jokes = (pyjokes.get_jokes(language='es'))
             joke = random.randint(0, len(list_jokes) - 1)
             Helena.habla_Helena(list_jokes[joke])
+            texto = ''
 
         elif 'quién es' in texto:
             Helena.habla_Helena('Un momento, estoy buscando esa información')
             buscar = texto.replace('quién es', '')
             resultado = wikipedia.summary(buscar, 1)
             Helena.habla_Helena(resultado)
+            texto = ''
 
         elif 'hasta pronto' in texto:
             Helena.habla_Helena('Hasta luego, fue un placer atenderte')
@@ -139,6 +144,6 @@ if __name__ == '__main__':
         texto = orden.escuchar_orden()
         #llamamos a la funcion ejecuta_orden para que intente procesar la orden
         if texto:
+            print(texto)
             orden.ejecuta_orden(texto)
-
 

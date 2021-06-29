@@ -1,16 +1,15 @@
 import os,time,random, re, random
 import vlc
-import speech_recognition as sr
 
-recognizer = sr.Recognizer()
 
 class Musica():
 
     def __init__(self):
+
         self.reproduciendo = False
         self.cambiar_tipo_musica = False
         self.finalizar_musica= False
-        
+
     def play_list_musics(self,rutas_musicas):
 
         self.media_player = vlc.MediaListPlayer()
@@ -34,13 +33,14 @@ class Musica():
         while True:
             if self.cambiar_tipo_musica:
                 #La siguiente variable la cambiamos a False para que no entre automaticamente ya que en 
-                #el mail la cambiamos a True, entonces sino le modificamos el valor entrara automaticamente
+                #el main la cambiamos a True, entonces sino le modificamos el valor entrara automaticamente
                 #en el While ya que seguira siendo True por eso antes de romper el bucle le cambiamos el valor
                 self.cambiar_tipo_musica =False
                 break
             
             elif self.finalizar_musica:
                 break
+
 
 
     def get_path_musics(self,texto,Helena):
@@ -89,7 +89,18 @@ class Musica():
         
 
 
+if __name__ == "__main__":
 
+    DIRECTORIO = 'D:/A_PYTHON/Documentacion_Python/Musica para estudiar/Programing_Music'
+    rutas_musicas = []
+
+    for ruta, carpetas, archivos in os.walk(DIRECTORIO):
+            for archivo in archivos:
+                ruta_cancion = os.path.join(ruta,archivo)
+                rutas_musicas.append(ruta_cancion)
+    
+    musica = Musica()
+    musica.play_list_musics(rutas_musicas)
 
 
 
