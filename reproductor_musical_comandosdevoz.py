@@ -104,7 +104,6 @@ class reproducor_musical():
             mixer.music.set_endevent(self.MUSIC_END)
 
             while True:
-                            
                 for event in pygame.event.get():#Recorremos constantemente los eventos para enterarnos cuando la cancion finalice
                     if event.type == self.MUSIC_END:#Verificamos si la canción ha finalizado
                         if path_musics[self.posicion_cancion] == path_musics[-1]:

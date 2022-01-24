@@ -3,6 +3,7 @@ import pyttsx3, pyjokes, wikipedia
 import speech_recognition as sr
 from reproducir_canciones import Musica
 from concurrent.futures import ThreadPoolExecutor
+from AbrirCerrarProgramas.openClose import open_programs, close_programs
 
 #Creamos nuestra piscina de Threads para usarlo en la llamada a las funciones
 ejecutor = ThreadPoolExecutor(max_workers=5)
@@ -36,7 +37,8 @@ class ProcesarOrden():
         #de time out funciona para que recognizer deje de esperar mas información segundos despues de escuchar silencio, en nuestro caso 1 segundo
         with sr.Microphone() as source:
             try:
-                self.audio = recognizer.listen(source, timeout=1)
+                recognizer.adjust_for_ambient_noise(source)#To avoid ambient noise problem
+                self.audio = recognizer.listen(source, timeout=3)
                 self.palabras_escuchadas = recognizer.recognize_google(self.audio, language='es-ES').lower()
                 return self.palabras_escuchadas
             except:
@@ -92,6 +94,18 @@ class ProcesarOrden():
             resultado = wikipedia.summary(buscar, 1)
             Helena.habla_Helena(resultado)
             texto = ''
+        
+        elif 'abrir programas' in texto:
+            Helena.habla_Helena('Hola ingeniero Francisco, Abriendo programas')
+            open_programs()
+            texto = ''
+            Helena.habla_Helena('Se finalizó con la orden de abrir programas')
+
+        elif 'cerrar programas' in texto:
+            Helena.habla_Helena('De acuerdo ingeniero Francisco, Cerrando programas')
+            close_programs()
+            texto = ''
+            Helena.habla_Helena('Se finalizó con la orden de cerrar programas')
 
         elif 'hasta pronto' in texto:
             Helena.habla_Helena('Hasta luego, fue un placer atenderte')
@@ -111,13 +125,13 @@ class AsistenteHelena():
     def saludo_Helena(self):
         self.hora = int(datetime.datetime.now().strftime('%H'))
         if self.hora < 12:
-            saludo_Helena = 'Buenos dias mi nombre es Helena, estoy para servile'
+            saludo_Helena = 'Buenos dias mi nombre es Helena, estoy para servirle'
             self.habla_Helena(saludo_Helena)
         elif self.hora >= 12 and self.hora < 18:
-            saludo_Helena = 'Buenas tardes mi nombre es Helena, estoy para servile'
+            saludo_Helena = 'Buenas tardes mi nombre es Helena, estoy para servirle'
             self.habla_Helena(saludo_Helena)
         elif self.hora >= 18:
-            saludo_Helena = 'Buenas noches mi nombre es Helena, estoy para servile'
+            saludo_Helena = 'Buenas noches mi nombre es Helena, estoy para servirle'
             self.habla_Helena(saludo_Helena)
 
     def repetir_orden(self):

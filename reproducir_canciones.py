@@ -33,7 +33,7 @@ class Musica():
         while True:
             if self.cambiar_tipo_musica:
                 #La siguiente variable la cambiamos a False para que no entre automaticamente ya que en 
-                #el main la cambiamos a True, entonces sino le modificamos el valor entrara automaticamente
+                #el metodo __init__ la cambiamos a True, entonces sino le modificamos el valor entrara automaticamente
                 #en el While ya que seguira siendo True por eso antes de romper el bucle le cambiamos el valor
                 self.cambiar_tipo_musica =False
                 break
