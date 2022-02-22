@@ -35,15 +35,20 @@ class ProcesarOrden():
         #Es importtante cerrar el Microfono de la computadora despues de hablar ya que de lo contrario si se continua escuchando la
         #Ruido recognozer seguira esperando recibir mas información y nunca retornara el texto has que haya silencio total, el parámetro
         #de time out funciona para que recognizer deje de esperar mas información segundos despues de escuchar silencio, en nuestro caso 1 segundo
-        with sr.Microphone() as source:
-            try:
-                recognizer.adjust_for_ambient_noise(source)#To avoid ambient noise problem
-                self.audio = recognizer.listen(source, timeout=3)
-                self.palabras_escuchadas = recognizer.recognize_google(self.audio, language='es-ES').lower()
-                return self.palabras_escuchadas
-            except:
-                self.palabras_escuchadas = ''
-                return self.palabras_escuchadas
+        try:
+            with sr.Microphone() as source:
+                try:
+                    recognizer.adjust_for_ambient_noise(source)#To avoid ambient noise problem
+                    self.audio = recognizer.listen(source, timeout=3)
+                    self.palabras_escuchadas = recognizer.recognize_google(self.audio, language='es-ES').lower()
+                    return self.palabras_escuchadas
+                except:
+                    self.palabras_escuchadas = ''
+                    return self.palabras_escuchadas
+        except Exception as e:
+            print(e)
+            print()
+            print('Please check your microphone settings...')
 
     def ejecuta_orden(self,texto):
 
@@ -95,13 +100,13 @@ class ProcesarOrden():
             Helena.habla_Helena(resultado)
             texto = ''
         
-        elif 'abrir programas' in texto:
+        elif 'inicia programa' in texto:
             Helena.habla_Helena('Hola ingeniero Francisco, Abriendo programas')
             open_programs()
             texto = ''
             Helena.habla_Helena('Se finalizó con la orden de abrir programas')
 
-        elif 'cerrar programas' in texto:
+        elif 'cierra programa' in texto:
             Helena.habla_Helena('De acuerdo ingeniero Francisco, Cerrando programas')
             close_programs()
             texto = ''
